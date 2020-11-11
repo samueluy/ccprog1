@@ -1,6 +1,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+typedef struct
+{
+	int day;
+	int gil;
+	int debt;
+} nCurrent;
+
 typedef struct /*On hand values*/
 {
 	int pd;
@@ -25,17 +32,22 @@ typedef struct /*Price of items*/
 	int tr;
 } nPrice;
 
-void priceGenerator(int nPrice)
+void randomizePrice(nPrice *price) /*Randomize item prices based on its limits + srand(time(NULL))*/
 {
-	if(nPrice >= 300 && nPrice <= 800)
-		nPrice = (rand() % (800 - 301)) + 300;
-	else if (nPrice >= 1000 && nPrice <= 1700)
-		nPrice = (rand() % (1700 - 1001)) + 1000;
-	else if (nPrice);
+	srand(time(NULL));
+	
+	price->pd = (rand() % (1200 - 501)) + 500;
+	price->ee = (rand() % (2100 - 1501)) + 1500;
+	price->pi = (rand() % (7000 - 5001)) + 5000;
+	price->gm = (rand() % (5500 - 3501)) + 3500;
+	price->sc = (rand() % (12000 - 8001)) + 8000;
+	price->ad = (rand() % (30000 - 15001)) + 15000;
+	price->dm = (rand() % (70000 - 40001)) + 40000;
+	price->tr = (rand() % (90000 - 60001)) + 60000;
 }
 
 void introScreen() /*Introduction Screen*/
-{
+{	
 	printf("  ______ __                        __  _        ___     __              __                 \n");
 	printf(" / ___(_) /__ ____ ___ _  ___ ___ / / ( )___   / _ |___/ /  _____ ___  / /___ _________ ___\n");
 	printf("/ (_ / / / _ `/ _ `/  ' \\/ -_|_-</ _ \\|/(_-<  / __ / _  / |/ / -_) _ \\/ __/ // / __/ -_|_-<\n");
@@ -46,7 +58,7 @@ void introScreen() /*Introduction Screen*/
 }
 
 void mainMenu(int nDay, int nGil, int nDebt) /*Main Rift Screen*/
-{
+{	
 	printf("\nGilgamesh: Adventure awaits! Where should I go?\n\n");
 	printf("\t[1] Tycoon Meteor's Minerals\t\t\tDay #%d\n", nDay);
 	printf("\t[2] Pulsian Restoratives\t\t\tGil: %d\n", nGil);
@@ -58,17 +70,17 @@ void mainMenu(int nDay, int nGil, int nDebt) /*Main Rift Screen*/
 	printf("\t[8] Quit\n\n");
 }
 
-void shopScreen(char shopName[], nOnHand hand, nPrice price) /*Shop Screen*/
+void shopScreen(char shopName[], nOnHand hand, nPrice price, nCurrent current) /*Shop Screen*/
 {
 	printf("\n$$$$$$$$$$$$$$$$$$$$$$$$$\n");
 	printf("%s\n", shopName);
 	printf("$$$$$$$$$$$$$$$$$$$$$$$$$\n\n");
 	printf("Shopkeeper: Hello! What can I do for you?\n\n");
-	printf("Item\t\t\tOn hand\t\t\n");
+	printf("Item\t\t\tOn hand\t\tPrice\n");
 	printf("[1]Phoenix Down\t\t%d\t\t%d\n", hand.pd, price.pd);
-	printf("[2]Elixir Essence\t%d\t\t%d\n", hand.ee, price.ee);
-	printf("[3]Platinum Ingot\t%d\t\t%d\n", hand.pi, price.pi);
-	printf("[4]Golden Material\t%d\t\t%d\n", hand.gm, price.gm);
+	printf("[2]Elixir Essence\t%d\t\t%d\t\tDay #%d\n", hand.ee, price.ee, current.day);
+	printf("[3]Platinum Ingot\t%d\t\t%d\t\tGil: %d\n", hand.pi, price.pi, current.gil);
+	printf("[4]Golden Material\t%d\t\t%d\t\tDebt: %d\n", hand.gm, price.gm, current.debt);
 	printf("[5]Scarletite\t\t%d\t\t%d\n", hand.sc, price.sc);
 	printf("[6]Adamantite\t\t%d\t\t%d\n", hand.ad, price.ad);
 	printf("[7]Dark Matter\t\t%d\t\t%d\n", hand.dm, price.dm);
@@ -100,7 +112,8 @@ void validOption(int *userInput, int min, int max) /*Check if user input is vali
 int main()
 {
 	nOnHand hand = {0, 0, 0, 0, 0, 0, 0, 0};
-	nPrice price = {300, 1000, 4500, 3000, 5000, 9500, 22000, 35000};
+	nPrice price = {0, 0, 0, 0, 0, 0, 0, 0};
+	nCurrent current = {1, 20000, 50000};
 	int nIntro, nMenu, nDay = 1, nGil = 20000, nDebt = 50000;
 	char nShop;
 	char shop_tmm[25] = "Tycoon Meteor's Minerals";
@@ -131,28 +144,25 @@ int main()
 	fflush(stdin);
 	switch(nMenu)
 	{
-		case 1: shopScreen(shop_tmm, hand, price);
+		case 1:	randomizePrice(&price);
+				shopScreen(shop_tmm, hand, price, current);
 				printf("Enter: ");
 				scanf(" %c", &nShop);
-				if(nShop == 'B'); /*NOT WORKING*/
-				{
-					printf("B");
-				}
 				break;
 				
-		case 2: shopScreen(shop_pr, hand, price);
+		case 2: shopScreen(shop_pr, hand, price, current);
 				break;
 				
-		case 3: shopScreen(shop_al, hand, price);
+		case 3: shopScreen(shop_al, hand, price, current);
 				break;
 				
-		case 4:	shopScreen(shop_cme, hand, price);
+		case 4:	shopScreen(shop_cme, hand, price, current);
 				break;
 				
-		case 5: shopScreen(shop_gg, hand, price);
+		case 5: shopScreen(shop_gg, hand, price, current);
 				break;
 
-		case 6: shopScreen(shop_rms, hand, price);
+		case 6: shopScreen(shop_rms, hand, price, current);
 				break;
 				
 		case 7: break;
