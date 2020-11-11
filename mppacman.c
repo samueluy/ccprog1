@@ -70,13 +70,31 @@ void mainMenu(int nDay, int nGil, int nDebt) /*Main Rift Screen*/
 	printf("\t[8] Quit\n\n");
 }
 
-void shopScreen(char shopName[], nOnHand hand, nPrice price, nCurrent current) /*Shop Screen*/
+void buyChoice(char shopName[], nOnHand hand, nPrice price, nCurrent current) /*Choose if buy, sell, or leave*/
 {
 	printf("\n$$$$$$$$$$$$$$$$$$$$$$$$$\n");
 	printf("%s\n", shopName);
 	printf("$$$$$$$$$$$$$$$$$$$$$$$$$\n\n");
 	printf("Shopkeeper: Hello! What can I do for you?\n\n");
-	printf("Item\t\t\tOn hand\t\tPrice\n");
+	printf("Item\t\t\tOn hand\t\tPrice\n\n");
+	printf("Phoenix Down\t\t%d\t\t%d\n", hand.pd, price.pd);
+	printf("Elixir Essence\t\t%d\t\t%d\t\tDay #%d\n", hand.ee, price.ee, current.day);
+	printf("Platinum Ingot\t\t%d\t\t%d\t\tGil: %d\n", hand.pi, price.pi, current.gil);
+	printf("Golden Material\t\t%d\t\t%d\t\tDebt: %d\n", hand.gm, price.gm, current.debt);
+	printf("Scarletite\t\t%d\t\t%d\n", hand.sc, price.sc);
+	printf("Adamantite\t\t%d\t\t%d\n", hand.ad, price.ad);
+	printf("Dark Matter\t\t%d\t\t%d\n", hand.dm, price.dm);
+	printf("Trapezohedron\t\t%d\t\t%d\n\n", hand.tr, price.tr);
+	printf("[B]UY\n[S]ELL\n[L]EAVE\n\n");
+}
+
+void shopScreen(char shopName[], nOnHand hand, nPrice price, nCurrent current) /*Shop Screen*/
+{
+	printf("\n$$$$$$$$$$$$$$$$$$$$$$$$$\n");
+	printf("%s\n", shopName);
+	printf("$$$$$$$$$$$$$$$$$$$$$$$$$\n\n");
+	printf("Shopkeeper: Great! Select an item!\n\n");
+	printf("Item\t\t\tOn hand\t\tPrice\n\n");
 	printf("[1]Phoenix Down\t\t%d\t\t%d\n", hand.pd, price.pd);
 	printf("[2]Elixir Essence\t%d\t\t%d\t\tDay #%d\n", hand.ee, price.ee, current.day);
 	printf("[3]Platinum Ingot\t%d\t\t%d\t\tGil: %d\n", hand.pi, price.pi, current.gil);
@@ -85,7 +103,6 @@ void shopScreen(char shopName[], nOnHand hand, nPrice price, nCurrent current) /
 	printf("[6]Adamantite\t\t%d\t\t%d\n", hand.ad, price.ad);
 	printf("[7]Dark Matter\t\t%d\t\t%d\n", hand.dm, price.dm);
 	printf("[8]Trapezohedron\t%d\t\t%d\n\n", hand.tr, price.tr);
-	printf("[B]UY\n[S]ELL\n[L]EAVE\n\n");
 }
 
 void merchantMenu() /*Merchant of the Rift*/
@@ -114,7 +131,7 @@ int main()
 	nOnHand hand = {0, 0, 0, 0, 0, 0, 0, 0};
 	nPrice price = {0, 0, 0, 0, 0, 0, 0, 0};
 	nCurrent current = {1, 20000, 50000};
-	int nIntro, nMenu, nDay = 1, nGil = 20000, nDebt = 50000;
+	int  i, nIntro, nMenu, nSelect;
 	char nShop;
 	char shop_tmm[25] = "Tycoon Meteor's Minerals";
 	char shop_pr[21] = "Pulsian Restoratives";
@@ -137,46 +154,68 @@ int main()
 				break;
 	}
 	
-	mainMenu(nDay, nGil, nDebt); /*Display Main Rift Screen*/
+	mainMenu(current.day, current.gil, current.debt); /*Display Main Rift Screen*/
 	printf("Enter: ");
 	scanf("%d", &nMenu);
 	validOption(&nMenu, 1, 8); /*is valid*/
 	fflush(stdin);
-	switch(nMenu)
-	{
-		case 1:	randomizePrice(&price);
-				shopScreen(shop_tmm, hand, price, current);
-				printf("Enter: ");
-				scanf(" %c", &nShop);
-				break;
-				
-		case 2: shopScreen(shop_pr, hand, price, current);
-				break;
-				
-		case 3: shopScreen(shop_al, hand, price, current);
-				break;
-				
-		case 4:	shopScreen(shop_cme, hand, price, current);
-				break;
-				
-		case 5: shopScreen(shop_gg, hand, price, current);
-				break;
 
-		case 6: shopScreen(shop_rms, hand, price, current);
-				break;
+	for(i=1; i<30; i++) /*loop until 30 game days*/
+	{
+		switch(nMenu)
+		{
+			case 1:	randomizePrice(&price);
+					buyChoice(shop_tmm, hand, price, current);
+					printf("Enter: ");
+					scanf("%c", &nShop);
+					if(nShop == 'B')
+					{
+						shopScreen(shop_tmm, hand, price, current);
+						printf("Enter: ");
+						scanf("%d", &nSelect);
+						/*MAKE A FUNCTION THAT WILL SELECT AN ITEM, ADD ON HAND, SUBTRACT GIL TO PRICE*/
+					}
+					else(nShop == 'L');
+					break;
+					break;
 				
-		case 7: break;
+			case 2: shopScreen(shop_pr, hand, price, current);
+					break;
+				
+			case 3: shopScreen(shop_al, hand, price, current);
+					break;
+				
+			case 4:	shopScreen(shop_cme, hand, price, current);
+					break;
+					
+			case 5: shopScreen(shop_gg, hand, price, current);
+					break;
+
+			case 6: shopScreen(shop_rms, hand, price, current);
+					break;
+				
+			case 7: break;
 		
-		case 8: printf("See you again, adventurer!"); /*EXIT PROGRAM*/
-				exit(0);
-				break;
+			case 8: printf("See you again, adventurer!"); /*EXIT PROGRAM*/
+					exit(0);
+					break;
+		}
+		
+		current.day++; /*Add day + 1*/
 	}
 	return 0;
 }
 
-/*TO DO LIST:
+/*
+TO DO LIST:
 Bring sense dun sa mga cases.. wala pa siyang pinapatunguhan | I think puro functions rin ilalagay dun sa cases then tuloy tuloy
 Make variables to keep track of date, gil, and debt.
 Struct maybe??? multiple arguments sa function
 Generate Price range
+
+BUGS:
+Day keeps on increasing while running events
+
+NOTES:
+Possible kaya na gawing function yung nangyayari sa isang case para di masyado makalat tignan yung main function?
 */
