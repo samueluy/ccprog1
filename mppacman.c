@@ -32,6 +32,84 @@ typedef struct /*Price of items*/
 	int tr;
 } nPrice;
 
+void shopBuy(int select, nPrice price, nCurrent *current, nOnHand *hand) /*Buy item function = Gil - Price & On Hand + 1*/
+{
+	switch (select)
+	{
+		case 1: current->gil = current->gil - price.pd;
+				hand->pd = hand->pd + 1;
+				break;
+				
+		case 2: current->gil = current->gil - price.ee;
+				hand->ee = hand->ee + 1;
+				break;
+				
+		case 3: current->gil = current->gil - price.pi;
+				hand->pi = hand->pi + 1;
+				break;
+				
+		case 4: current->gil = current->gil - price.gm;
+				hand->gm = hand->gm + 1;
+				break;
+				
+		case 5: current->gil = current->gil - price.sc;
+				hand->sc = hand->sc + 1;
+				break;
+				
+		case 6: current->gil = current->gil - price.ad;
+				hand->ad = hand->ad + 1;
+				break;
+				
+		case 7: current->gil = current->gil - price.dm;
+				hand->dm = hand->dm + 1;
+				break;
+				
+		case 8: current->gil = current->gil - price.tr;
+				hand->tr = hand->tr + 1;
+				break;
+
+	}
+}
+
+void shopSell(int select, nPrice price, nCurrent *current, nOnHand *hand) /*Buy item function = Gil - Price & On Hand + 1*/
+{
+	switch (select)
+	{
+		case 1: current->gil = current->gil + price.pd;
+				hand->pd = hand->pd - 1;
+				break;
+				
+		case 2: current->gil = current->gil + price.ee;
+				hand->ee = hand->ee - 1;
+				break;
+				
+		case 3: current->gil = current->gil + price.pi;
+				hand->pi = hand->pi - 1;
+				break;
+				
+		case 4: current->gil = current->gil + price.gm;
+				hand->gm = hand->gm - 1;
+				break;
+				
+		case 5: current->gil = current->gil + price.sc;
+				hand->sc = hand->sc - 1;
+				break;
+				
+		case 6: current->gil = current->gil + price.ad;
+				hand->ad = hand->ad - 1;
+				break;
+				
+		case 7: current->gil = current->gil + price.dm;
+				hand->dm = hand->dm - 1;
+				break;
+				
+		case 8: current->gil = current->gil + price.tr;
+				hand->tr = hand->tr - 1;
+				break;
+	}
+}
+
+
 void randomizePrice(nPrice *price) /*Randomize item prices based on its limits + srand(time(NULL))*/
 {
 	srand(time(NULL));
@@ -103,6 +181,7 @@ void shopScreen(char shopName[], nOnHand hand, nPrice price, nCurrent current) /
 	printf("[6]Adamantite\t\t%d\t\t%d\n", hand.ad, price.ad);
 	printf("[7]Dark Matter\t\t%d\t\t%d\n", hand.dm, price.dm);
 	printf("[8]Trapezohedron\t%d\t\t%d\n\n", hand.tr, price.tr);
+	printf("[9]BACK\n");
 }
 
 void merchantMenu() /*Merchant of the Rift*/
@@ -132,7 +211,7 @@ int main()
 	nPrice price = {0, 0, 0, 0, 0, 0, 0, 0};
 	nCurrent current = {1, 20000, 50000};
 	int  i, nIntro, nMenu, nSelect;
-	char nShop;
+	char cShop, cConfirm;
 	char shop_tmm[25] = "Tycoon Meteor's Minerals";
 	char shop_pr[21] = "Pulsian Restoratives";
 	char shop_al[19] = "Archadian Luxuries";
@@ -154,31 +233,66 @@ int main()
 				break;
 	}
 	
+	for(i=1; i<30; i++) /*loop until 30 game days*/
+	{
+	fflush(stdin);
+	nSelect = 0; /*Reset nSelect Value*/
 	mainMenu(current.day, current.gil, current.debt); /*Display Main Rift Screen*/
 	printf("Enter: ");
 	scanf("%d", &nMenu);
 	validOption(&nMenu, 1, 8); /*is valid*/
-	fflush(stdin);
-
-	for(i=1; i<30; i++) /*loop until 30 game days*/
-	{
+	
 		switch(nMenu)
 		{
 			case 1:	randomizePrice(&price);
-					buyChoice(shop_tmm, hand, price, current);
-					printf("Enter: ");
-					scanf("%c", &nShop);
-					if(nShop == 'B')
+					cConfirm = '.';
+					while(cConfirm != 'C')
 					{
-						shopScreen(shop_tmm, hand, price, current);
+						nSelect = 0; /*Set nSelect to 0*/
+						fflush(stdin);
+						buyChoice(shop_tmm, hand, price, current);
 						printf("Enter: ");
-						scanf("%d", &nSelect);
-						/*MAKE A FUNCTION THAT WILL SELECT AN ITEM, ADD ON HAND, SUBTRACT GIL TO PRICE*/
+						scanf("%c", &cShop);
+						
+						if(cShop == 'B')
+						{
+							while(nSelect != 9)/*Keep on prompting for purchase until leave*/
+							{
+							nSelect = 0;
+							shopScreen(shop_tmm, hand, price, current);
+							printf("Enter: ");
+							scanf("%d", &nSelect);
+							shopBuy(nSelect, price, &current, &hand);
+							}
+						}
+						
+						else if(cShop == 'S')
+						{
+							while(nSelect != 9) /*Keep on prompting for purchase until leave*/
+							{
+								shopScreen(shop_tmm, hand, price, current);
+								printf("Enter: ");
+								scanf("%d", &nSelect);
+								shopSell(nSelect, price, &current, &hand);
+							}
+						}
+					
+						else if(cShop == 'L')
+						{
+							fflush(stdin);
+							printf("Leave [C]onfirm\t[B]ack\n");
+							printf("Enter: ");
+							scanf("%c", &cConfirm);
+						}
+				 
+					/*else if(nShop != 'B' || nShop != 'S' || nShop != 'L')
+					{
+						printf("Enter a valid option: ");
+						scanf("%c", &nShop);
+					}*/
 					}
-					else(nShop == 'L');
 					break;
-					break;
-				
+					
 			case 2: shopScreen(shop_pr, hand, price, current);
 					break;
 				
@@ -194,7 +308,8 @@ int main()
 			case 6: shopScreen(shop_rms, hand, price, current);
 					break;
 				
-			case 7: break;
+			case 7: merchantMenu();
+					break;
 		
 			case 8: printf("See you again, adventurer!"); /*EXIT PROGRAM*/
 					exit(0);
@@ -208,14 +323,15 @@ int main()
 
 /*
 TO DO LIST:
-Bring sense dun sa mga cases.. wala pa siyang pinapatunguhan | I think puro functions rin ilalagay dun sa cases then tuloy tuloy
-Make variables to keep track of date, gil, and debt.
-Struct maybe??? multiple arguments sa function
-Generate Price range
+Function to check if have enough gil
+Function to check if have enough on hand
+Sold out 30%
+Specialty shop
+Invalid inputs
+merchantMenu
+Final screen
 
 BUGS:
-Day keeps on increasing while running events
 
 NOTES:
-Possible kaya na gawing function yung nangyayari sa isang case para di masyado makalat tignan yung main function?
 */
