@@ -36,36 +36,76 @@ void shopBuy(int select, nPrice price, nCurrent *current, nOnHand *hand) /*Buy i
 {
 	switch (select)
 	{
-		case 1: current->gil = current->gil - price.pd;
-				hand->pd = hand->pd + 1;
+		case 1: if(price.pd > 0)
+				{
+					current->gil = current->gil - price.pd;
+					hand->pd = hand->pd + 1;
+				}
+				else
+				printf("Phoenix Down is out of stock!\n");
 				break;
 				
-		case 2: current->gil = current->gil - price.ee;
+		case 2: if(price.ee > 0)
+				{
+				current->gil = current->gil - price.ee;
 				hand->ee = hand->ee + 1;
+				}
+				else
+				printf("Elixir Essence is out of stock!\n");
 				break;
 				
-		case 3: current->gil = current->gil - price.pi;
+		case 3: if(price.pi > 0)
+				{
+				current->gil = current->gil - price.pi;
 				hand->pi = hand->pi + 1;
+				}
+				else
+				printf("Platinum Ingot is out of stock!\n");
 				break;
 				
-		case 4: current->gil = current->gil - price.gm;
+		case 4: if(price.gm > 0)
+				{
+				current->gil = current->gil - price.gm;
 				hand->gm = hand->gm + 1;
+				}
+				else
+				printf("Golden Materia is out of stock!\n");
 				break;
 				
-		case 5: current->gil = current->gil - price.sc;
+		case 5: if(price.sc > 0)
+				{
+				current->gil = current->gil - price.sc;
 				hand->sc = hand->sc + 1;
+				}
+				else
+				printf("Scarletite is out of stock!\n");
 				break;
 				
-		case 6: current->gil = current->gil - price.ad;
+		case 6: if(price.ad > 0)
+				{
+				current->gil = current->gil - price.ad;
 				hand->ad = hand->ad + 1;
+				}
+				else
+				printf("Adamantite is out of stock!\n");
 				break;
 				
-		case 7: current->gil = current->gil - price.dm;
+		case 7: if(price.dm > 0)
+				{
+				current->gil = current->gil - price.dm;
 				hand->dm = hand->dm + 1;
+				}
+				else
+				printf("Dark Matter is out of stock!\n");
 				break;
 				
-		case 8: current->gil = current->gil - price.tr;
+		case 8: if(price.tr > 0)
+				{
+				current->gil = current->gil - price.tr;
 				hand->tr = hand->tr + 1;
+				}
+				else
+				printf("Trapezohedron is out of stock!\n");
 				break;
 
 	}
@@ -75,36 +115,76 @@ void shopSell(int select, nPrice price, nCurrent *current, nOnHand *hand) /*Buy 
 {
 	switch (select)
 	{
-		case 1: current->gil = current->gil + price.pd;
+		case 1: if(price.pd > 0)
+				{
+				current->gil = current->gil + price.pd;
 				hand->pd = hand->pd - 1;
+				}
+				else
+				printf("\nPhoenix Down? I don't want that.\n");
 				break;
 				
-		case 2: current->gil = current->gil + price.ee;
+		case 2: if(price.ee > 0)
+				{
+				current->gil = current->gil + price.ee;
 				hand->ee = hand->ee - 1;
+				}
+				else
+				printf("\nElixir Essence? I don't want that.\n");
 				break;
 				
-		case 3: current->gil = current->gil + price.pi;
+		case 3: if(price.pi > 0)
+				{
+				current->gil = current->gil + price.pi;
 				hand->pi = hand->pi - 1;
+				}
+				else
+				printf("\nPlatinum Ingot? I don't want that.\n");
 				break;
 				
-		case 4: current->gil = current->gil + price.gm;
+		case 4: if(price.gm > 0)
+				{
+				current->gil = current->gil + price.gm;
 				hand->gm = hand->gm - 1;
+				}
+				else
+				printf("\nGolden Materia? I don't want that.\n");
 				break;
 				
-		case 5: current->gil = current->gil + price.sc;
+		case 5: if(price.sc > 0)
+				{
+				current->gil = current->gil + price.sc;
 				hand->sc = hand->sc - 1;
+				}
+				else
+				printf("\nScarletite? I don't want that.\n");
 				break;
 				
-		case 6: current->gil = current->gil + price.ad;
+		case 6: if(price.ad > 0)
+				{
+				current->gil = current->gil + price.ad;
 				hand->ad = hand->ad - 1;
+				}
+				else
+				printf("\nAdamantite? I don't want that.\n");
 				break;
 				
-		case 7: current->gil = current->gil + price.dm;
+		case 7: if(price.dm > 0)
+				{
+				current->gil = current->gil + price.dm;
 				hand->dm = hand->dm - 1;
+				}
+				else
+				printf("\nDark Matter? I don't want that.\n");
 				break;
 				
-		case 8: current->gil = current->gil + price.tr;
+		case 8: if(price.tr > 0)
+				{
+				current->gil = current->gil + price.tr;
 				hand->tr = hand->tr - 1;
+				}
+				else
+				printf("\nTrapezohedron? I don't want that.'\n");
 				break;
 	}
 }
@@ -142,21 +222,21 @@ void soldOut(nPrice *price) /*30% chance to sold out. Randomize 1-100 then if be
 	price->dm = (rand() % (100 - 1));
 	price->tr = (rand() % (100 - 1));
 	
-	if(price->pd < 30)
+	if(price->pd <= 30)
 	price->pd = 0;
-	if(price->ee < 30)
+	if(price->ee <= 30)
 	price->ee = 0;
-	if(price->pi < 30)
+	if(price->pi <= 30)
 	price->pi = 0;
-	if(price->gm < 30)
+	if(price->gm <= 30)
 	price->gm = 0;
-	if(price->sc < 30)
+	if(price->sc <= 30)
 	price->sc = 0;
-	if(price->ad < 30)
+	if(price->ad <= 30)
 	price->ad = 0;
-	if(price->dm < 30)
+	if(price->dm <= 30)
 	price->dm = 0;
-	if(price->tr < 30)
+	if(price->tr <= 30)
 	price->tr = 0;
 }
 
@@ -193,37 +273,37 @@ void buyChoice(char shopName[], nOnHand hand, nPrice price, nCurrent current) /*
 	printf("Shopkeeper: Hello! What can I do for you?\n\n");
 	printf("Item\t\t\tOn hand\t\tPrice\n\n");
 	if(price.pd > 0)
-	printf("Phoenix Down\t\t%d\t\t%d\n", hand.pd, price.pd);
+		printf("Phoenix Down\t\t%d\t\t%d\n", hand.pd, price.pd);
 	else
-	printf("Phoenix Down\t\t%d\t\tSOLD OUT\n", hand.pd);
+		printf("Phoenix Down\t\t%d\t\tSOLD OUT\n", hand.pd);
 	if(price.ee > 0)
-	printf("Elixir Essence\t\t%d\t\t%d\t\tDay #%d\n", hand.ee, price.ee, current.day);
+		printf("Elixir Essence\t\t%d\t\t%d\t\tDay #%d\n", hand.ee, price.ee, current.day);
 	else
-	printf("Elixir Essence\t\t%d\t\tSOLD OUT\n", hand.ee);
+		printf("Elixir Essence\t\t%d\t\tSOLD OUT\tDay #%d\n", hand.ee, current.day);
 	if(price.pi > 0)
-	printf("Platinum Ingot\t\t%d\t\t%d\t\tGil: %d\n", hand.pi, price.pi, current.gil);
+		printf("Platinum Ingot\t\t%d\t\t%d\t\tGil: %d\n", hand.pi, price.pi, current.gil);
 	else
-	printf("Platinum Ingot\t\t%d\t\tSOLD OUT\n", hand.pi);
+		printf("Platinum Ingot\t\t%d\t\tSOLD OUT\tGil: %d\n", hand.pi, current.gil);
 	if(price.gm > 0)
-	printf("Golden Material\t\t%d\t\t%d\t\tDebt: %d\n", hand.gm, price.gm, current.debt);
+		printf("Golden Materia\t\t%d\t\t%d\t\tDebt: %d\n", hand.gm, price.gm, current.debt);
 	else
-	printf("Golden Material\t\t%d\t\tSOLD OUT\n", hand.gm);
+		printf("Golden Materia\t\t%d\t\tSOLD OUT\tDebt: %d\n", hand.gm, current.debt);
 	if(price.sc > 0)
-	printf("Scarletite\t\t%d\t\t%d\n", hand.sc, price.sc);
+		printf("Scarletite\t\t%d\t\t%d\n", hand.sc, price.sc);
 	else
-	printf("Scarletite\t\t%d\t\tSOLD OUT\n", hand.sc);
+		printf("Scarletite\t\t%d\t\tSOLD OUT\n", hand.sc);
 	if(price.ad > 0)
-	printf("Adamantite\t\t%d\t\t%d\n", hand.ad, price.ad);
+		printf("Adamantite\t\t%d\t\t%d\n", hand.ad, price.ad);
 	else
-	printf("Adamantite\t\t%d\t\tSOLD OUT\n", hand.ad);
+		printf("Adamantite\t\t%d\t\tSOLD OUT\n", hand.ad);
 	if(price.dm > 0)
-	printf("Dark Matter\t\t%d\t\t%d\n", hand.dm, price.dm);
+		printf("Dark Matter\t\t%d\t\t%d\n", hand.dm, price.dm);
 	else
-	printf("Dark Matter\t\t%d\t\tSOLD OUT\n", hand.dm);
+		printf("Dark Matter\t\t%d\t\tSOLD OUT\n", hand.dm);
 	if(price.tr > 0)
-	printf("Trapezohedron\t\t%d\t\t%d\n\n", hand.tr, price.tr);
+		printf("Trapezohedron\t\t%d\t\t%d\n\n", hand.tr, price.tr);
 	else
-	printf("Trapezohedron\t\t%d\t\tSOLD OUT\n", hand.tr);
+		printf("Trapezohedron\t\t%d\t\tSOLD OUT\n\n", hand.tr);
 	printf("[B]UY\n[S]ELL\n[L]EAVE\n\n");
 }
 
@@ -234,15 +314,39 @@ void shopScreen(char shopName[], nOnHand hand, nPrice price, nCurrent current) /
 	printf("$$$$$$$$$$$$$$$$$$$$$$$$$\n\n");
 	printf("Shopkeeper: Great! Select an item!\n\n");
 	printf("Item\t\t\tOn hand\t\tPrice\n\n");
-	printf("[1]Phoenix Down\t\t%d\t\t%d\n", hand.pd, price.pd);
-	printf("[2]Elixir Essence\t%d\t\t%d\t\tDay #%d\n", hand.ee, price.ee, current.day);
-	printf("[3]Platinum Ingot\t%d\t\t%d\t\tGil: %d\n", hand.pi, price.pi, current.gil);
-	printf("[4]Golden Material\t%d\t\t%d\t\tDebt: %d\n", hand.gm, price.gm, current.debt);
-	printf("[5]Scarletite\t\t%d\t\t%d\n", hand.sc, price.sc);
-	printf("[6]Adamantite\t\t%d\t\t%d\n", hand.ad, price.ad);
-	printf("[7]Dark Matter\t\t%d\t\t%d\n", hand.dm, price.dm);
-	printf("[8]Trapezohedron\t%d\t\t%d\n\n", hand.tr, price.tr);
-	printf("[9]BACK\n");
+	if(price.pd > 0)
+		printf("[1]Phoenix Down\t\t%d\t\t%d\n", hand.pd, price.pd);
+	else
+		printf("[1]Phoenix Down\t\t\%d\t\tSOLD OUT\n", hand.pd);
+	if(price.ee > 0)
+		printf("[2]Elixir Essence\t%d\t\t%d\t\tDay #%d\n", hand.ee, price.ee, current.day);
+	else
+		printf("[2]Elixir Essence\t%d\t\tSOLD OUT\tDay #%d\n", hand.ee, current.day);
+	if(price.pi > 0)
+		printf("[3]Platinum Ingot\t%d\t\t%d\t\tGil: %d\n", hand.pi, price.pi, current.gil);
+	else
+		printf("[3]Platinum Ingot\t%d\t\tSOLD OUT\tGil: %d\n", hand.pi, current.gil);
+	if(price.gm > 0)
+		printf("[4]Golden Materia\t%d\t\t%d\t\tDebt: %d\n", hand.gm, price.gm, current.debt);
+	else
+		printf("[4]Golden Materia\t%d\t\tSOLD OUT\tDebt: %d\n", hand.gm, current.debt);
+	if(price.sc > 0)
+		printf("[5]Scarletite\t\t%d\t\t%d\n", hand.sc, price.sc);
+	else
+		printf("[5]Scarletite\t\t%d\t\tSOLD OUT\n", hand.sc);
+	if(price.ad > 0)
+		printf("[6]Adamantite\t\t%d\t\t%d\n", hand.ad, price.ad);
+	else
+		printf("[6]Adamantite\t\t%d\t\tSOLD OUT\n", hand.ad);
+	if(price.dm > 0)
+		printf("[7]Dark Matter\t\t%d\t\t%d\n", hand.dm, price.dm);
+	else
+		printf("]7Dark Matter\t\t%d\t\tSOLD OUT\n", hand.dm);
+	if(price.tr > 0)
+		printf("[8]Trapezohedron\t%d\t\t%d\n\n", hand.tr, price.tr);
+	else
+		printf("[8]Trapezohedron\t%d\t\tSOLD OUT\n", hand.tr);
+		printf("[9]BACK\n\n");
 }
 
 void merchantMenu() /*Merchant of the Rift*/
@@ -260,7 +364,7 @@ void validOption(int *userInput, int min, int max) /*Check if user input is vali
 {
 	while(*userInput < min || *userInput > max)
 	{
-		printf("INVALID NUMBER\nPlease enter a valid number: ");
+		printf("INVALID\nPlease enter a valid option: ");
 		fflush(stdin);
 		scanf("%d", userInput);
 	}
@@ -326,12 +430,13 @@ int main()
 								shopScreen(shop_tmm, hand, price, current); /*Open item list*/
 								printf("Enter: ");
 								scanf("%d", &nSelect);
-								if(current.gil > price.pd) /*Check if user has enough Gil to pay for item*/
+								validOption(&nSelect, 1, 9); /*Check validity of input*/
+								if(current.gil - price.pd > 0) /*Check if user has enough Gil to pay for item*/
 								{
 									shopBuy(nSelect, price, &current, &hand); /*Subtract Gil by item price then add On hand item*/
 								}
 								else
-								printf("That's not enough Gil.'.\n"); /*If user does not have enough Gil to purchase the item*/
+								printf("\nThat's not enough Gil.\n"); /*If user does not have enough Gil to purchase the item*/
 								}
 							}
 						
@@ -342,21 +447,28 @@ int main()
 								shopScreen(shop_tmm, hand, price, current); /*Open item list*/
 								printf("Enter: ");
 								scanf("%d", &nSelect);
+								validOption(&nSelect, 1, 9); /*Check validity of user input*/
 								if(hand.pd > 0) /*Check if user has enough On hand items to sell*/
 								{
 								shopSell(nSelect, price, &current, &hand); /*Subtract On hand by 1 then add sell price to Gil*/
 								}
 								else
-								printf("You don't have that.\n"); /*If user does not have enought On hand items to sell*/
+								printf("\nYou don't have that.\n"); /*If user does not have enought On hand items to sell*/
 								}
 						}
 					
 						else if(cShop == 'L') /*Leave the shop*/
 						{
 							fflush(stdin);
-							printf("Leave [C]onfirm\t[B]ack\n"); /*Confirm leave of shop*/
+							printf("\nLeave [C]onfirm\t[B]ack\n\n"); /*Confirm leave of shop*/
 							printf("Enter: ");
 							scanf("%c", &cConfirm);
+							while(cConfirm != 'C' && cConfirm != 'B')
+								{
+									printf("INVALID\nPlease enter a valid option: ");
+									fflush(stdin);
+									scanf("%c", &cConfirm);
+								}
 						}
 					}
 					break;
@@ -391,13 +503,13 @@ int main()
 
 /*
 TO DO LIST:
-Sold out 30% (shop screen) then make it unable to buy and sell
-Invalid inputs
 merchantMenu
 Final screen
 
 BUGS:
+
 shopScreen (buy already) continous flow. check if input is valid
+negative gil not working properly
 
 NOTES:
 */
