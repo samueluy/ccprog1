@@ -399,7 +399,7 @@ void shopScreen(char shopName[], nOnHand hand, nPrice price, nCurrent current) /
 	if(price.pd > 0)
 		printf("[1]Phoenix Down\t\t%d\t\t%d\n", hand.pd, price.pd);
 	else
-		printf("[1]Phoenix Down\t\t\%d\t\tSOLD OUT\n", hand.pd);
+		printf("[1]Phoenix Down\t\t%d\t\tSOLD OUT\n", hand.pd);
 	if(price.ee > 0)
 		printf("[2]Elixir Essence\t%d\t\t%d\t\tDay #%d\n", hand.ee, price.ee, current.day);
 	else
