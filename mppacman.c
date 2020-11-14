@@ -1,10 +1,12 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
 
 typedef struct
 {
 	int day;
 	int gil;
+	int bank;
 	int debt;
 } nCurrent;
 
@@ -230,6 +232,39 @@ void enoughGil(int nSelect, int *nEnough, nCurrent current, nPrice price) /*Chec
 	}
 }
 
+void depositCheck(int nInput, nCurrent *current)
+{
+	if(current->gil - nInput >= 0)
+	{
+		current->gil = current->gil - nInput;
+		current->bank = current->bank + nInput;
+	}
+	else
+		printf("\nAre you dreaming? You don't have that much!\n");
+}
+
+void payDebt(int nInput, nCurrent *current)
+{
+	if(current->gil - nInput >= 0)
+	{
+		current->gil = current->gil - nInput;
+		current->debt = current->debt - nInput;
+	}
+	else
+		printf("\nAre you dreaming? You don't have that much!\n");
+}
+
+void withdrawCheck(int nInput, nCurrent *current)
+{
+	if(current->bank - nInput >= 0)
+	{
+		current->gil = current->gil + nInput;
+		current->bank = current->bank - nInput;
+	}
+	else
+		printf("\nAre you dreaming? You don't have that much!\n");
+}
+
 void enoughHand(int nSelect, int *nHand, nOnHand hand, nPrice price) /*Check if user has On hand to sell. nHand = 1 is valid*/
 {
 	*nHand = 0;
@@ -333,13 +368,13 @@ void introScreen() /*Introduction Screen*/
 	printf("\t\t\t\t\t[2] Quit Game\n\n");
 }
 
-void mainMenu(int nDay, int nGil, int nDebt) /*Main Rift Screen*/
+void mainMenu(nCurrent current) /*Main Rift Screen*/
 {	
 	printf("\nGilgamesh: Adventure awaits! Where should I go?\n\n");
-	printf("\t[1] Tycoon Meteor's Minerals\t\t\tDay #%d\n", nDay);
-	printf("\t[2] Pulsian Restoratives\t\t\tGil: %d\n", nGil);
-	printf("\t[3] Archadian Luxuries\t\t\t\tDebt:%d \n", nDebt);
-	printf("\t[4] Cid's Magical Escapades\n");
+	printf("\t[1] Tycoon Meteor's Minerals\t\t\tDay #%d\n", current.day);
+	printf("\t[2] Pulsian Restoratives\t\t\tGil: %d\n", current.gil);
+	printf("\t[3] Archadian Luxuries\t\t\t\tDebt:%d \n", current.debt);
+	printf("\t[4] Cid's Magical Escapades\t\t\tBank: %d\n", current.bank);
 	printf("\t[5] Gaian Gratitudes\n");
 	printf("\t[6] Riches and Minerals of Spira\n");
 	printf("\t[7] Go see the Merchant of the Rift\n");
@@ -371,9 +406,9 @@ void buyChoice(char shopName[], nOnHand hand, nPrice price, nCurrent current) /*
 	else
 		printf("Golden Materia\t\t%d\t\tSOLD OUT\tDebt: %d\n", hand.gm, current.debt);
 	if(price.sc > 0)
-		printf("Scarletite\t\t%d\t\t%d\n", hand.sc, price.sc);
+		printf("Scarletite\t\t%d\t\t%d\t\tBank: %d\n", hand.sc, price.sc, current.bank);
 	else
-		printf("Scarletite\t\t%d\t\tSOLD OUT\n", hand.sc);
+		printf("Scarletite\t\t%d\t\tSOLD OUT\tBank: \n", hand.sc, current.bank);
 	if(price.ad > 0)
 		printf("Adamantite\t\t%d\t\t%d\n", hand.ad, price.ad);
 	else
@@ -413,9 +448,9 @@ void shopScreen(char shopName[], nOnHand hand, nPrice price, nCurrent current) /
 	else
 		printf("[4]Golden Materia\t%d\t\tSOLD OUT\tDebt: %d\n", hand.gm, current.debt);
 	if(price.sc > 0)
-		printf("[5]Scarletite\t\t%d\t\t%d\n", hand.sc, price.sc);
+		printf("[5]Scarletite\t\t%d\t\t%d\t\tBank: %d\n", hand.sc, price.sc, current.bank);
 	else
-		printf("[5]Scarletite\t\t%d\t\tSOLD OUT\n", hand.sc);
+		printf("[5]Scarletite\t\t%d\t\tSOLD OUT\tBank: %d\n", hand.sc, current.bank);
 	if(price.ad > 0)
 		printf("[6]Adamantite\t\t%d\t\t%d\n", hand.ad, price.ad);
 	else
@@ -431,15 +466,24 @@ void shopScreen(char shopName[], nOnHand hand, nPrice price, nCurrent current) /
 		printf("[9]BACK\n\n");
 }
 
-void merchantMenu() /*Merchant of the Rift*/
+void merchantMenu(nCurrent current) /*Merchant of the Rift*/
 {
-	printf("Merchant of the Rift: What do you want?\n\n");
-	printf("\t[1] Deposit Gil\n");
-	printf("\t[2] Withdraw Gil\n");
-	printf("\t[3] Pay off Debt\n");
-	printf("\t[4] Ask for additional loan\n");
+	printf("\n########################################\n");
+	printf("Merchant of the Rift: What do you want?\n");
+	printf("########################################\n\n");
+	printf("\t[1] Deposit Gil\t\t\tDay #%d\n", current.day);
+	printf("\t[2] Withdraw Gil\t\tGil: %d\n", current.gil);
+	printf("\t[3] Pay off Debt\t\tDebt: %d\n", current.debt);
+	printf("\t[4] Ask for additional loan\tBank: %d\n", current.bank);
 	printf("\t[5] Leave\n\n");
-	printf("Enter: ");
+}
+
+void finalScreen(int profit, nCurrent current)
+{
+	printf("END OF THE GAME!\n\n");
+	printf("Total Gil Earned: %d\n", current.gil + current.bank - 20000);
+	printf("Debt Remaining: %d\n", current.debt);
+	printf("Total Profit: %d\n", current.gil + current.bank - current.debt);
 }
 
 void validOption(int *userInput, int min, int max) /*Check if user input is valid given the minimum and maximum value*/
@@ -456,8 +500,8 @@ int main()
 {
 	nOnHand hand = {0, 0, 0, 0, 0, 0, 0, 0};
 	nPrice price = {0, 0, 0, 0, 0, 0, 0, 0};
-	nCurrent current = {1, 20000, 50000};
-	int  i, nIntro, nMenu, nSelect, nEnough, nHand;
+	nCurrent current = {1, 20000, 0, 50000};
+	int  i, nProfit, nIntro, nMenu, nSelect, nEnough, nHand, nMerchant, nInput;
 	char cShop, cConfirm;
 	char shop_tmm[25] = "Tycoon Meteor's Minerals";
 	char shop_pr[21] = "Pulsian Restoratives";
@@ -483,8 +527,8 @@ int main()
 	for(i=1; i<30; i++) /*loop until 30 game days*/
 	{
 	fflush(stdin);
-	nSelect = 0; /*Reset nSelect Value*/
-	mainMenu(current.day, current.gil, current.debt); /*Display Main Rift Screen*/
+	nSelect = 0, nMenu = 0; /*Reset nSelect  and nMenu Value*/
+	mainMenu(current); /*Display Main Rift Screen*/
 	printf("Enter: ");
 	scanf("%d", &nMenu);
 	validOption(&nMenu, 1, 8); /*is valid*/
@@ -516,9 +560,9 @@ int main()
 								if(nEnough == 1)
 									shopBuy(nSelect, price, &current, &hand); /*Subtract Gil by item price then add On hand item*/
 								else
-								printf("\nThat's not enough Gil.\n"); /*If user does not have enough Gil to purchase the item*/
-								}
+									printf("\nThat's not enough Gil.\n"); /*If user does not have enough Gil to purchase the item*/
 							}
+						}
 						
 						else if(cShop == 'S') /*If user wants to sell*/
 						{
@@ -530,12 +574,10 @@ int main()
 								validOption(&nSelect, 1, 9); /*Check validity of user input*/
 								enoughHand(nSelect, &nHand, hand, price);
 								if(nHand == 1) /*Check if user has enough On hand items to sell*/
-								{
-								shopSell(nSelect, price, &current, &hand); /*Subtract On hand by 1 then add sell price to Gil*/
-								}
+									shopSell(nSelect, price, &current, &hand); /*Subtract On hand by 1 then add sell price to Gil*/
 								else
-								printf("\nYou don't have that.\n"); /*If user does not have enought On hand items to sell*/
-								}
+									printf("\nYou don't have that.\n"); /*If user does not have enought On hand items to sell*/
+							}
 						}
 					
 						else if(cShop == 'L') /*Leave the shop*/
@@ -563,7 +605,7 @@ int main()
 					{
 						nSelect = 0; /*Set item selection to 0*/
 						fflush(stdin); /*Clear input*/
-						buyChoice(shop_tmm, hand, price, current); /*Open buy choice menu*/
+						buyChoice(shop_pr, hand, price, current); /*Open buy choice menu*/
 						printf("Enter: ");
 						scanf("%c", &cShop);
 						
@@ -572,7 +614,7 @@ int main()
 							while(nSelect != 9)/*Keep on prompting for purchase until leave*/
 							{
 								nSelect = 0; /*Item select to 0*/
-								shopScreen(shop_tmm, hand, price, current); /*Open item list*/
+								shopScreen(shop_pr, hand, price, current); /*Open item list*/
 								printf("Enter: ");
 								scanf("%d", &nSelect);
 								validOption(&nSelect, 1, 9); /*Check validity of input*/
@@ -580,26 +622,24 @@ int main()
 								if(nEnough == 1)
 									shopBuy(nSelect, price, &current, &hand); /*Subtract Gil by item price then add On hand item*/
 								else
-								printf("\nThat's not enough Gil.\n"); /*If user does not have enough Gil to purchase the item*/
-								}
+									printf("\nThat's not enough Gil.\n"); /*If user does not have enough Gil to purchase the item*/
 							}
+						}
 						
 						else if(cShop == 'S') /*If user wants to sell*/
 						{
 							while(nSelect != 9) /*Keep on prompting for purchase until leave*/
 							{
-								shopScreen(shop_tmm, hand, price, current); /*Open item list*/
+								shopScreen(shop_pr, hand, price, current); /*Open item list*/
 								printf("Enter: ");
 								scanf("%d", &nSelect);
 								validOption(&nSelect, 1, 9); /*Check validity of user input*/
 								enoughHand(nSelect, &nHand, hand, price);
 								if(nHand == 1) /*Check if user has enough On hand items to sell*/
-								{
-								shopSell(nSelect, price, &current, &hand); /*Subtract On hand by 1 then add sell price to Gil*/
-								}
+									shopSell(nSelect, price, &current, &hand); /*Subtract On hand by 1 then add sell price to Gil*/
 								else
-								printf("\nYou don't have that.\n"); /*If user does not have enought On hand items to sell*/
-								}
+									printf("\nYou don't have that.\n"); /*If user does not have enought On hand items to sell*/
+							}
 						}
 					
 						else if(cShop == 'L') /*Leave the shop*/
@@ -620,13 +660,13 @@ int main()
 				
 			case 3: soldOut(&price);
 					randomizePrice(&price); /*Randomize item prices*/
-					price.pi = (rand() % (6000 - 45001)) + 45000; /*Specialty item price*/
+					price.pi = (rand() % (6000 - 4501)) + 4500; /*Specialty item price*/
 					cConfirm = '.'; /*Set a random value for confirm leave*/
 					while(cConfirm != 'C') /*Prompt confirm before leaving*/
 					{
 						nSelect = 0; /*Set item selection to 0*/
 						fflush(stdin); /*Clear input*/
-						buyChoice(shop_tmm, hand, price, current); /*Open buy choice menu*/
+						buyChoice(shop_al, hand, price, current); /*Open buy choice menu*/
 						printf("Enter: ");
 						scanf("%c", &cShop);
 						
@@ -635,7 +675,7 @@ int main()
 							while(nSelect != 9)/*Keep on prompting for purchase until leave*/
 							{
 								nSelect = 0; /*Item select to 0*/
-								shopScreen(shop_tmm, hand, price, current); /*Open item list*/
+								shopScreen(shop_al, hand, price, current); /*Open item list*/
 								printf("Enter: ");
 								scanf("%d", &nSelect);
 								validOption(&nSelect, 1, 9); /*Check validity of input*/
@@ -643,26 +683,24 @@ int main()
 								if(nEnough == 1)
 									shopBuy(nSelect, price, &current, &hand); /*Subtract Gil by item price then add On hand item*/
 								else
-								printf("\nThat's not enough Gil.\n"); /*If user does not have enough Gil to purchase the item*/
-								}
+									printf("\nThat's not enough Gil.\n"); /*If user does not have enough Gil to purchase the item*/
 							}
+						}
 						
 						else if(cShop == 'S') /*If user wants to sell*/
 						{
 							while(nSelect != 9) /*Keep on prompting for purchase until leave*/
 							{
-								shopScreen(shop_tmm, hand, price, current); /*Open item list*/
+								shopScreen(shop_al, hand, price, current); /*Open item list*/
 								printf("Enter: ");
 								scanf("%d", &nSelect);
 								validOption(&nSelect, 1, 9); /*Check validity of user input*/
 								enoughHand(nSelect, &nHand, hand, price);
 								if(nHand == 1) /*Check if user has enough On hand items to sell*/
-								{
-								shopSell(nSelect, price, &current, &hand); /*Subtract On hand by 1 then add sell price to Gil*/
-								}
+									shopSell(nSelect, price, &current, &hand); /*Subtract On hand by 1 then add sell price to Gil*/
 								else
-								printf("\nYou don't have that.\n"); /*If user does not have enought On hand items to sell*/
-								}
+									printf("\nYou don't have that.\n"); /*If user does not have enought On hand items to sell*/
+							}
 						}
 					
 						else if(cShop == 'L') /*Leave the shop*/
@@ -689,7 +727,7 @@ int main()
 					{
 						nSelect = 0; /*Set item selection to 0*/
 						fflush(stdin); /*Clear input*/
-						buyChoice(shop_tmm, hand, price, current); /*Open buy choice menu*/
+						buyChoice(shop_cme, hand, price, current); /*Open buy choice menu*/
 						printf("Enter: ");
 						scanf("%c", &cShop);
 						
@@ -698,7 +736,7 @@ int main()
 							while(nSelect != 9)/*Keep on prompting for purchase until leave*/
 							{
 								nSelect = 0; /*Item select to 0*/
-								shopScreen(shop_tmm, hand, price, current); /*Open item list*/
+								shopScreen(shop_cme, hand, price, current); /*Open item list*/
 								printf("Enter: ");
 								scanf("%d", &nSelect);
 								validOption(&nSelect, 1, 9); /*Check validity of input*/
@@ -707,25 +745,23 @@ int main()
 									shopBuy(nSelect, price, &current, &hand); /*Subtract Gil by item price then add On hand item*/
 								else
 								printf("\nThat's not enough Gil.\n"); /*If user does not have enough Gil to purchase the item*/
-								}
 							}
+						}
 						
 						else if(cShop == 'S') /*If user wants to sell*/
 						{
 							while(nSelect != 9) /*Keep on prompting for purchase until leave*/
 							{
-								shopScreen(shop_tmm, hand, price, current); /*Open item list*/
+								shopScreen(shop_cme, hand, price, current); /*Open item list*/
 								printf("Enter: ");
 								scanf("%d", &nSelect);
 								validOption(&nSelect, 1, 9); /*Check validity of user input*/
 								enoughHand(nSelect, &nHand, hand, price);
 								if(nHand == 1) /*Check if user has enough On hand items to sell*/
-								{
-								shopSell(nSelect, price, &current, &hand); /*Subtract On hand by 1 then add sell price to Gil*/
-								}
+									shopSell(nSelect, price, &current, &hand); /*Subtract On hand by 1 then add sell price to Gil*/
 								else
-								printf("\nYou don't have that.\n"); /*If user does not have enought On hand items to sell*/
-								}
+									printf("\nYou don't have that.\n"); /*If user does not have enought On hand items to sell*/
+							}
 						}
 					
 						else if(cShop == 'L') /*Leave the shop*/
@@ -753,7 +789,7 @@ int main()
 					{
 						nSelect = 0; /*Set item selection to 0*/
 						fflush(stdin); /*Clear input*/
-						buyChoice(shop_tmm, hand, price, current); /*Open buy choice menu*/
+						buyChoice(shop_gg, hand, price, current); /*Open buy choice menu*/
 						printf("Enter: ");
 						scanf("%c", &cShop);
 						
@@ -762,7 +798,7 @@ int main()
 							while(nSelect != 9)/*Keep on prompting for purchase until leave*/
 							{
 								nSelect = 0; /*Item select to 0*/
-								shopScreen(shop_tmm, hand, price, current); /*Open item list*/
+								shopScreen(shop_gg, hand, price, current); /*Open item list*/
 								printf("Enter: ");
 								scanf("%d", &nSelect);
 								validOption(&nSelect, 1, 9); /*Check validity of input*/
@@ -770,26 +806,24 @@ int main()
 								if(nEnough == 1)
 									shopBuy(nSelect, price, &current, &hand); /*Subtract Gil by item price then add On hand item*/
 								else
-								printf("\nThat's not enough Gil.\n"); /*If user does not have enough Gil to purchase the item*/
-								}
+									printf("\nThat's not enough Gil.\n"); /*If user does not have enough Gil to purchase the item*/
 							}
+						}
 						
 						else if(cShop == 'S') /*If user wants to sell*/
 						{
 							while(nSelect != 9) /*Keep on prompting for purchase until leave*/
 							{
-								shopScreen(shop_tmm, hand, price, current); /*Open item list*/
+								shopScreen(shop_gg, hand, price, current); /*Open item list*/
 								printf("Enter: ");
 								scanf("%d", &nSelect);
 								validOption(&nSelect, 1, 9); /*Check validity of user input*/
 								enoughHand(nSelect, &nHand, hand, price);
 								if(nHand == 1) /*Check if user has enough On hand items to sell*/
-								{
-								shopSell(nSelect, price, &current, &hand); /*Subtract On hand by 1 then add sell price to Gil*/
-								}
+									shopSell(nSelect, price, &current, &hand); /*Subtract On hand by 1 then add sell price to Gil*/
 								else
-								printf("\nYou don't have that.\n"); /*If user does not have enought On hand items to sell*/
-								}
+									printf("\nYou don't have that.\n"); /*If user does not have enought On hand items to sell*/
+							}
 						}
 					
 						else if(cShop == 'L') /*Leave the shop*/
@@ -817,7 +851,7 @@ int main()
 					{
 						nSelect = 0; /*Set item selection to 0*/
 						fflush(stdin); /*Clear input*/
-						buyChoice(shop_tmm, hand, price, current); /*Open buy choice menu*/
+						buyChoice(shop_rms, hand, price, current); /*Open buy choice menu*/
 						printf("Enter: ");
 						scanf("%c", &cShop);
 						
@@ -826,7 +860,7 @@ int main()
 							while(nSelect != 9)/*Keep on prompting for purchase until leave*/
 							{
 								nSelect = 0; /*Item select to 0*/
-								shopScreen(shop_tmm, hand, price, current); /*Open item list*/
+								shopScreen(shop_rms, hand, price, current); /*Open item list*/
 								printf("Enter: ");
 								scanf("%d", &nSelect);
 								validOption(&nSelect, 1, 9); /*Check validity of input*/
@@ -834,26 +868,24 @@ int main()
 								if(nEnough == 1)
 									shopBuy(nSelect, price, &current, &hand); /*Subtract Gil by item price then add On hand item*/
 								else
-								printf("\nThat's not enough Gil.\n"); /*If user does not have enough Gil to purchase the item*/
-								}
+									printf("\nThat's not enough Gil.\n"); /*If user does not have enough Gil to purchase the item*/
 							}
+						}
 						
 						else if(cShop == 'S') /*If user wants to sell*/
 						{
 							while(nSelect != 9) /*Keep on prompting for purchase until leave*/
 							{
-								shopScreen(shop_tmm, hand, price, current); /*Open item list*/
+								shopScreen(shop_rms, hand, price, current); /*Open item list*/
 								printf("Enter: ");
 								scanf("%d", &nSelect);
 								validOption(&nSelect, 1, 9); /*Check validity of user input*/
 								enoughHand(nSelect, &nHand, hand, price);
 								if(nHand == 1) /*Check if user has enough On hand items to sell*/
-								{
-								shopSell(nSelect, price, &current, &hand); /*Subtract On hand by 1 then add sell price to Gil*/
-								}
+									shopSell(nSelect, price, &current, &hand); /*Subtract On hand by 1 then add sell price to Gil*/
 								else
-								printf("\nYou don't have that.\n"); /*If user does not have enought On hand items to sell*/
-								}
+									printf("\nYou don't have that.\n"); /*If user does not have enought On hand items to sell*/
+							}
 						}
 					
 						else if(cShop == 'L') /*Leave the shop*/
@@ -872,27 +904,83 @@ int main()
 					}
 					break;
 				
-			case 7: merchantMenu();
+			case 7: cConfirm = '.'; /*Set a random value for confirm leave*/
+					while(cConfirm != 'C')
+					{
+					merchantMenu(current);
+					fflush(stdin);
+					printf("Enter: ");
+					scanf("%d", &nMerchant);
+					validOption(&nMerchant, 1, 5);
+					
+					switch(nMerchant)
+					{
+						case 1: printf("How much Gil do you want to deposit?: ");
+								scanf("%d", &nInput);
+								depositCheck(nInput, &current);
+								break;
+								
+						case 2: printf("How much Gil do you want to withdraw?: ");
+								scanf("%d", &nInput);
+								withdrawCheck(nInput, &current);
+								
+								break;
+						
+						case 3: printf("How much debt do you want to pay?: ");
+								scanf("%d", &nInput);
+								payDebt(nInput, &current);
+								break;
+								
+						case 4: printf("How much do you want?: ");
+								scanf("%d", &nInput);
+								if(nInput > 0)
+								{
+									current.gil = current.gil + nInput;
+									current.debt = current.debt + nInput;
+								}
+								else
+								printf("You can't loan nothing!\n");
+								break;
+						
+						case 5: 
+								
+								fflush(stdin);
+								printf("\nLeave [C]onfirm\t[B]ack\n\n"); /*Confirm leave of merchant*/
+								printf("Enter: ");
+								scanf("%c", &cConfirm);
+								while(cConfirm != 'C' && cConfirm != 'B')
+								{
+									printf("INVALID\nPlease enter a valid option: ");
+									fflush(stdin);
+									scanf("%c", &cConfirm);
+								}
+								break;
+						}
+					}
+					current.day--;
 					break;
-		
-			case 8: printf("See you again, adventurer!"); /*EXIT PROGRAM*/
-					exit(0);
+					
+			case 8: i = current.day + 30; /*Finish the game*/
 					break;
 		}
-		
+		current.bank = current.bank * 1.10; /*Bank interest*/
+		current.debt = current.debt * 1.15; /*Debt interest*/
 		current.day++; /*Add day + 1*/
 	}
+	
+	finalScreen(nProfit, current);
 	return 0;
 }
-
 /*
 TO DO LIST:
-merchantMenu
-Final screen
+Final screen (win or lose)
 Colors
 Design
 Introductory comment and a comment before every function.
+
 BUGS:
+May continous pa rin if mag spam ng entry
 
 NOTES:
+Check for design flaws
 */
