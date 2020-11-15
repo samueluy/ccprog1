@@ -478,7 +478,21 @@ void merchantMenu(nCurrent current) /*Merchant of the Rift*/
 	printf("\t[5] Leave\n\n");
 }
 
-void finalScreen(int profit, nCurrent current)
+void winScreen(nCurrent current)
+{
+	printf("Total Profit: %dGil\nDebt Left: %d\n\n", current.gil + current.bank - current.debt, current.debt);
+	printf("Merchant of the Rift: Good luck on your adventure, Gilgamesh!\n\n");
+	printf("\t\t\t\tCongratulations! You won!\n\n");
+}
+
+void loseScreen(nCurrent current)
+{
+	printf("Total Profit: %dGil\nDebt Left: %d\n\n", current.gil + current.bank - current.debt, current.debt);
+	printf("Merchant of the Rift: What a failure! Return to me when you have enough.\n\n");
+	printf("\t\t\t\tYou lost.!\n\n");
+}
+
+void finalScreen(nCurrent current)
 {
 	printf("END OF THE GAME!\n\n");
 	printf("Total Gil Earned: %d\n", current.gil + current.bank - 20000);
@@ -500,9 +514,8 @@ int main()
 {
 	nOnHand hand = {0, 0, 0, 0, 0, 0, 0, 0};
 	nPrice price = {0, 0, 0, 0, 0, 0, 0, 0};
-	nCurrent current = {1, 20000, 0, 50000};
 	int  i, nProfit, nIntro, nMenu, nSelect, nEnough, nHand, nMerchant, nInput;
-	char cShop, cConfirm;
+	char cShop, cConfirm, cPlay = '.';
 	char shop_tmm[25] = "Tycoon Meteor's Minerals";
 	char shop_pr[21] = "Pulsian Restoratives";
 	char shop_al[19] = "Archadian Luxuries";
@@ -523,7 +536,9 @@ int main()
 				exit(0);
 				break;
 	}
-	
+	while(cPlay != 'N')
+{
+	nCurrent current = {1, 20000, 0, 50000};
 	for(i=1; i<30; i++) /*loop until 30 game days*/
 	{
 	fflush(stdin);
@@ -958,6 +973,7 @@ int main()
 						}
 					}
 					current.day--;
+					i--;
 					break;
 					
 			case 8: i = current.day + 30; /*Finish the game*/
@@ -967,13 +983,20 @@ int main()
 		current.debt = current.debt * 1.15; /*Debt interest*/
 		current.day++; /*Add day + 1*/
 	}
-	
-	finalScreen(nProfit, current);
+	fflush(stdin);
+	if(current.debt > 0)
+		winScreen(current);
+	else
+		loseScreen(current);
+	finalScreen(current);
+	printf("\nPlay Again? [Y]es, [N]o: ");
+	scanf("%c", &cPlay);
+	}
+	printf("\nThank you for playing!");
 	return 0;
 }
 /*
 TO DO LIST:
-Final screen (win or lose)
 Colors
 Design
 Introductory comment and a comment before every function.
